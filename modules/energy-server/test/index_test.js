@@ -57,7 +57,7 @@ test('/auth/token return a jwt token if auth succeed', async t => {
   server.close(()=>t.end());
 });
 
-test('/auth/token return a jwt token if auth fails', async t => {
+test('/auth/token return 403 if auth fails on bad user', async t => {
   const server = await prepareServer();
 
   const res = await fetch('http://localhost:9080/token', {
@@ -68,6 +68,32 @@ test('/auth/token return a jwt token if auth fails', async t => {
   t.equal(res.status, 403);
   server.close(()=>t.end());
 });
+
+test('/auth/token return 403 if auth fails on bad password', async t => {
+  const server = await prepareServer();
+
+  const res = await fetch('http://localhost:9080/token', {
+    headers: {
+      authorization: basicAuthHeader('testuser', 'badpwd')
+    }
+  });
+  t.equal(res.status, 403);
+  server.close(()=>t.end());
+});
+
+
+test('/auth/token return 403 if auth fails on password empty', async t => {
+  const server = await prepareServer();
+
+  const res = await fetch('http://localhost:9080/token', {
+    headers: {
+      authorization: basicAuthHeader('testuser', '')
+    }
+  });
+  t.equal(res.status, 403);
+  server.close(()=>t.end());
+});
+
 
 test('/auth/token return 403 if not auth provided', async t => {
   const server = await prepareServer();

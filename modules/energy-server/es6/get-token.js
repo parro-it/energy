@@ -1,5 +1,8 @@
 import jsonwebtoken from 'jsonwebtoken';
 import rethinkdbdash from 'rethinkdbdash';
+import thenify from 'thenify';
+import { compare as _compare } from 'bcrypt-nodejs';
+const compare = thenify(_compare);
 const r = rethinkdbdash({db: 'energy'});
 
 export function drainConnectionPool() {
@@ -8,16 +11,23 @@ export function drainConnectionPool() {
 
 export default (secret, jwtIssuer) => async (req, res, next) => {
   const auth = req.authorization.basic;
-  if (!auth || !auth.username) {
+  const failed = () => {
     res.send(403);
-    return next();
+    next();
+  };
+
+  if (!auth || !auth.username || !auth.password) {
+    return failed();
   }
 
   const user = await r.table('users').get(auth.username).run();
-
   if (user === null) {
-    res.send(403);
-    return next();
+    return failed();
+  }
+
+  const passwordValid = await compare(auth.password, user.password);
+  if (!passwordValid) {
+    return failed();
   }
 
   const payload = {

@@ -9,6 +9,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "babel-runtime": "^5.8.20",
+    "bcrypt-nodejs": "0.0.3",
     "jsonwebtoken": "^5.0.5",
     "restify": "^4.0.0",
     "restify-jwt": "^0.2.0",
