@@ -54,4 +54,4 @@ dist
 dist_test
 private
 init
-
+rethinkdb_data

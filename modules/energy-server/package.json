@@ -11,7 +11,8 @@
     "babel-runtime": "^5.8.20",
     "jsonwebtoken": "^5.0.5",
     "restify": "^4.0.0",
-    "restify-jwt": "^0.2.0"
+    "restify-jwt": "^0.2.0",
+    "rethinkdbdash": "^2.1.7"
   },
   "author": "parro-it",
   "scripts": {

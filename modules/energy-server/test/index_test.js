@@ -7,6 +7,7 @@ const makeServer = require(moduleRoot);
 import test from 'tape-catch';
 import fetch from 'node-fetch';
 import basicAuthHeader from 'basic-auth-header';
+const drainConnectionPool = require(moduleRoot + '/get-token').drainConnectionPool;
 
 function helloName(req, res, next) {
   res.send('hello ' + req.params.name);
@@ -21,24 +22,24 @@ function getUser(req, res, next) {
 async function prepareServer() {
   const server = makeServer({publicRoutes: ['/hello/tests']});
   server.get('/hello/:name', helloName);
-  server.get('/protected',getUser);
+  server.get('/protected', getUser);
 
   return new Promise( resolve => {
-    server.listen(8080, () => resolve(server));
+    server.listen(9080, () => resolve(server));
   });
 }
 
 
 test('energy server respond', async t => {
   const server = await prepareServer();
-  const res = await fetch('http://localhost:8080/hello/tests');
+  const res = await fetch('http://localhost:9080/hello/tests');
   const result = await res.json();
   t.equal(result, 'hello tests');
   server.close(()=>t.end());
 });
 
 async function fetchToken() {
-  const res = await fetch('http://localhost:8080/token', {
+  const res = await fetch('http://localhost:9080/token', {
     headers: {
       authorization: basicAuthHeader('testuser', 'testpwd')
     }
@@ -59,7 +60,7 @@ test('/auth/token return a jwt token if auth succeed', async t => {
 test('/auth/token return a jwt token if auth fails', async t => {
   const server = await prepareServer();
 
-  const res = await fetch('http://localhost:8080/token', {
+  const res = await fetch('http://localhost:9080/token', {
     headers: {
       authorization: basicAuthHeader('baduser', 'testpwd')
     }
@@ -71,7 +72,7 @@ test('/auth/token return a jwt token if auth fails', async t => {
 test('/auth/token return 403 if not auth provided', async t => {
   const server = await prepareServer();
 
-  const res = await fetch('http://localhost:8080/token');
+  const res = await fetch('http://localhost:9080/token');
   t.equal(res.status, 403);
   server.close(()=>t.end());
 });
@@ -81,7 +82,7 @@ test('/protected return user if valid token provided', async t => {
   const server = await prepareServer();
   const token = await fetchToken();
 
-  const res = await fetch('http://localhost:8080/protected', {
+  const res = await fetch('http://localhost:9080/protected', {
     headers: {
       authorization: `Bearer ${token}`
     }
@@ -93,7 +94,7 @@ test('/protected return user if valid token provided', async t => {
 
 test('/protected return 401 if no token provided', async t => {
   const server = await prepareServer();
-  const res = await fetch('http://localhost:8080/protected');
+  const res = await fetch('http://localhost:9080/protected');
 
   t.equal(res.status, 401);
   server.close(()=>t.end());
@@ -102,7 +103,7 @@ test('/protected return 401 if no token provided', async t => {
 
 test('/protected return 401 if bad token provided', async t => {
   const server = await prepareServer();
-  const res = await fetch('http://localhost:8080/protected', {
+  const res = await fetch('http://localhost:9080/protected', {
     headers: {
       authorization: `Bearer badftoken`
     }
@@ -110,5 +111,10 @@ test('/protected return 401 if bad token provided', async t => {
 
   t.equal(res.status, 401);
   server.close(()=>t.end());
+});
+
+test('close rethink connections', t => {
+  drainConnectionPool();
+  t.end();
 });
 
