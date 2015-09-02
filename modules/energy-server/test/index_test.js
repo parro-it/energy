@@ -4,11 +4,11 @@ if (process.env.TEST_RELEASE) {
 }
 
 const energy = require(moduleRoot);
+import test from 'tape';
 
-describe('energy', () => {
-  it('works', async () => {
-    const result = await energy();
-    result.should.be.equal(42);
-  });
+test('energy works', async t => {
+  const result = await energy();
+  t.equal(result, 42);
+  t.end();
 });
 
