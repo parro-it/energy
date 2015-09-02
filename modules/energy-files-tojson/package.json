@@ -1,5 +1,5 @@
 {
-  "name": "energy-server",
+  "name": "energy",
   "description": "",
   "repository": "https://github.com/parro-it/energy.git",
   "bugs": {
@@ -8,12 +8,8 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "dependencies": {
-    "babel-runtime": "^5.8.20",
-    "bcrypt-nodejs": "0.0.3",
-    "jsonwebtoken": "^5.0.5",
-    "restify": "^4.0.0",
-    "restify-jwt": "^0.2.0",
-    "rethinkdbdash": "^2.1.7"
+    "babel-runtime": "^5.8.20"
+
   },
   "author": "parro-it",
   "scripts": {
@@ -45,12 +41,10 @@
     "babel": "^5.8.23",
     "babel-core": "^5.8.23",
     "babel-eslint": "^4.0.5",
-    "basic-auth-header": "^1.0.0",
     "eslint": "^1.3.1",
     "eslint-config-airbnb": "0.0.8",
     "eslint-plugin-babel": "^2.1.1",
     "eslint-plugin-react": "^3.3.1",
-    "node-fetch": "^1.3.2",
     "nodemon": "^1.4.1",
     "tap-dot": "^1.0.0",
     "tape": "^4.2.0",
