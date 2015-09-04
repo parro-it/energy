@@ -7,13 +7,17 @@
   },
   "version": "1.0.0",
   "main": "dist/index.js",
+  "bin": {
+    "p-e": "dist/p-e.js"
+  },
   "dependencies": {
     "JSONStream": "^1.0.4",
     "babel-runtime": "^5.8.20",
     "glob-stream": "^5.0.0",
     "multipipe": "^0.1.2",
     "stream-stream": "^1.2.6",
-    "through2-map": "^2.0.0"
+    "through2-map": "^2.0.0",
+    "yargs": "^3.23.0"
   },
   "author": "parro-it",
   "scripts": {
@@ -21,7 +25,7 @@
     "test-watch": "nodemon --watch es6/ --watch test/ --exec \"npm run test\"",
     "test-release": "export TEST_RELEASE=1 && babel-node dist_test/*_test.js",
     "build": "babel es6 --out-dir dist",
-    "build-test": "babel test --out-dir dist_test",
+    "build-test": "babel test --out-dir dist_test && cp -r test/fixtures dist_test",
     "lint": "eslint es6/*.js test/*.js",
     "check": "npm run lint && npm run build && npm run build-test && npm run test-release",
     "prepublish": "npm run check"

@@ -5,28 +5,30 @@ import { parseDetails, parseRecap } from 'energy-files-tojson';
 import { createReadStream } from 'fs';
 import map from 'through2-map';
 import multipipe from 'multipipe';
+import { relative } from 'path';
 
-function formatChooser(file) {
+const formatChooser = relativeDir => file => {
   let converter = null;
   if (file.path.endsWith('.details.csv')) {
-    converter = parseDetails(file.path);
+    converter = parseDetails;
   } else if (file.path.endsWith('.general.csv')) {
-    converter = parseRecap(file.path);
+    converter = parseRecap;
   } else {
     this.emit(`Unknown file type ${file.path}`);
     return undefined;
   }
 
-  return createReadStream(file.path, 'utf8').pipe(converter);
-}
+  return createReadStream(file.path, 'utf8')
+    .pipe(converter(relative(relativeDir, file.path)));
+};
 
 
-export default function convertFiles(pattern) {
+export default function convertFiles(pattern, relativeDir) {
   const stream = gs.create(pattern);
 
   return multipipe(
     stream,
-    map.obj(formatChooser),
+    map.obj(formatChooser(relativeDir)),
     ss({ objectMode: true }),
     stringify()
   );
