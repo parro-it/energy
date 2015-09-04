@@ -7,6 +7,9 @@
   },
   "version": "1.0.0",
   "main": "dist/index.js",
+  "bin": {
+    "energy": "dist/energy.js"
+  },
   "dependencies": {
     "JSONStream": "^1.0.4",
     "babel-runtime": "^5.8.20",

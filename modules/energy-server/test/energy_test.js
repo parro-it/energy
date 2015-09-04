@@ -47,7 +47,12 @@ test('/protected return user if valid token provided', async t => {
 
   });
   const result = await res.json();
-  t.equal(result, 'testuser');
+
+  t.deepEqual(
+    result.map(({inserted}) => ({inserted})),
+    [ { inserted: 1 }, { inserted: 1 } ]
+  );
+
   server.close(()=>t.end());
 });
 
