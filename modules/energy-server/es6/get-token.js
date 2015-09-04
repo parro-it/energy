@@ -1,13 +1,9 @@
 import jsonwebtoken from 'jsonwebtoken';
-import rethinkdbdash from 'rethinkdbdash';
 import thenify from 'thenify';
 import { compare as _compare } from 'bcrypt-nodejs';
-const compare = thenify(_compare);
-const r = rethinkdbdash({db: 'energy'});
+import { getUser } from './model';
 
-export function drainConnectionPool() {
-  r.getPool().drain();
-}
+const compare = thenify(_compare);
 
 export default (secret, jwtIssuer) => async (req, res, next) => {
   const auth = req.authorization.basic;
@@ -20,7 +16,7 @@ export default (secret, jwtIssuer) => async (req, res, next) => {
     return failed();
   }
 
-  const user = await r.table('users').get(auth.username).run();
+  const user = await getUser(auth.username);
   if (user === null) {
     return failed();
   }

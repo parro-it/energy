@@ -7,7 +7,7 @@ const makeServer = require(moduleRoot);
 import test from 'tape-catch';
 import fetch from 'node-fetch';
 import basicAuthHeader from 'basic-auth-header';
-const drainConnectionPool = require(moduleRoot + '/get-token').drainConnectionPool;
+const drainConnectionPool = require(moduleRoot + '/model').drainConnectionPool;
 
 function helloName(req, res, next) {
   res.send('hello ' + req.params.name);
