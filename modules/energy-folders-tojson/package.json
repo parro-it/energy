@@ -1,5 +1,5 @@
 {
-  "name": "energy-files-tojson",
+  "name": "energy-folders-tojson",
   "description": "",
   "repository": "https://github.com/parro-it/energy.git",
   "bugs": {
@@ -8,11 +8,11 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "dependencies": {
+    "JSONStream": "^1.0.4",
     "babel-runtime": "^5.8.20",
-    "csv-streamify": "^2.0.0",
-    "moment": "^2.10.6",
+    "glob-stream": "^5.0.0",
     "multipipe": "^0.1.2",
-    "slice-through": "^1.0.1",
+    "stream-stream": "^1.2.6",
     "through2-map": "^2.0.0"
   },
   "author": "parro-it",
