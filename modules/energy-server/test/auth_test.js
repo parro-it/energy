@@ -7,7 +7,6 @@ const makeServer = require(moduleRoot);
 import test from 'tape-catch';
 import fetch from 'node-fetch';
 import basicAuthHeader from 'basic-auth-header';
-const drainConnectionPool = require(moduleRoot + '/model').drainConnectionPool;
 
 function helloName(req, res, next) {
   res.send('hello ' + req.params.name);
@@ -139,8 +138,4 @@ test('/protected return 401 if bad token provided', async t => {
   server.close(()=>t.end());
 });
 
-test('close rethink connections', t => {
-  drainConnectionPool();
-  t.end();
-});
 

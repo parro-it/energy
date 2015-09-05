@@ -29,7 +29,7 @@ async function fetchToken() {
 }
 
 
-test('/protected return user if valid token provided', async t => {
+test('/insert bare files in database', async t => {
   const server = await prepareServer();
   const token = await fetchToken();
 
@@ -56,9 +56,4 @@ test('/protected return user if valid token provided', async t => {
   server.close(()=>t.end());
 });
 
-
-test('close rethink connections', t => {
-  drainConnectionPool();
-  t.end();
-});
 

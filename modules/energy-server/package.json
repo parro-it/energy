@@ -27,7 +27,7 @@
   },
   "author": "parro-it",
   "scripts": {
-    "test": "babel-node test/*_test.js | tap-dot",
+    "test": "babel-node test | tap-dot",
     "test-watch": "nodemon --watch es6/ --watch test/ --exec \"npm run test\"",
     "test-release": "export TEST_RELEASE=1 && babel-node dist_test/*_test.js",
     "build": "babel es6 --out-dir dist",
