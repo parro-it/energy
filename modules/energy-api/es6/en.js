@@ -2,6 +2,7 @@
 
 import energyApi from './index';
 import yargs from 'yargs';
+import logUpdate from 'log-update';
 // import { stringify } from 'JSONStream';
 
 const {
@@ -16,9 +17,13 @@ const {
   await api.login(username, password);
 
   const res = await api.insertFiles(pattern, process.cwd());
-  res.on('filesCounting', () => process.stdout.write('.'));
-  res.on('filesCounter', n => process.stdout.write('\nfilesCounter:' + n + '\n'));
-  res.on('end', () => process.stdout.write('all files read'));
+  let total = 0;
+  res.on('filesCounting', progress => logUpdate(`
+    progress: ${progress} of ${total}
+  `));
+
+  res.on('filesCounter', n => total = n);
+  res.on('end', () => logUpdate('all files read'));
    // .pipe(stringify())
    // .pipe(process.stdout);
 })().catch(err => process.stdout.write(err.stack));

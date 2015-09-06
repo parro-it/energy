@@ -3,6 +3,7 @@ import ss from 'stream-stream';
 import { parseDetails, parseRecap } from 'energy-files-tojson';
 import { createReadStream } from 'fs';
 import map from 'through2-map';
+import filter from 'through2-filter';
 import multipipe from 'multipipe';
 import { relative } from 'path';
 
@@ -13,7 +14,7 @@ const formatChooser = relativeDir => file => {
   } else if (file.path.endsWith('.general.csv')) {
     converter = parseRecap;
   } else {
-    this.emit(`Unknown file type ${file.path}`);
+    process.stderr.write(`Unknown file type ${file.path}`);
     return undefined;
   }
 
@@ -35,6 +36,7 @@ export default function convertFiles(pattern, relativeDir) {
       return chunk;
     }),
     fileReader,
+    filter.obj(r => !!r),
     ss({ objectMode: true })
   );
 

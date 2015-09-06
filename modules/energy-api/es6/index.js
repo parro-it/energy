@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import convertFiles from 'energy-folders-tojson';
 // import { Agent } from 'https';
+import { EventEmitter } from 'events';
 import basicAuthHeader from 'basic-auth-header';
 import { stringify, parse } from 'JSONStream';
 import { resolve } from 'path';
@@ -67,9 +68,12 @@ export default ({baseUrl} = {}) => ({
 
   async insertFiles(globs, baseFolder) {
     const filesCounter = await this.countFiles(globs, baseFolder);
-
+    const filesCount = filesCounter.length;
     const files = convertFiles(globs, baseFolder);
-    const body = files.pipe(stringify());
+    const body = files
+      .pipe(stringify());
+
+    files.on('error', err => process.stderr.write(err.message));
 
     const res = await this.request('/energy/insert-bare-files', {
       body,
@@ -77,13 +81,12 @@ export default ({baseUrl} = {}) => ({
     });
 
     const results = res.body.pipe(parse('*'));
+
     setImmediate(() => {
-      results.emit('filesCounter', filesCounter.length);
+      results.emit('filesCounter', filesCount);
     });
 
-
     files.on('filesCounting', n => results.emit('filesCounting', n));
-
     return results;
   }
 });
