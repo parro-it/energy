@@ -1,0 +1,10 @@
+Error: request to http://localhost:9080/token failed, reason: connect ECONNREFUSED 127.0.0.1:9080
+    at ClientRequest.<anonymous> (/home/parro-it/Desktop/repos/energy/modules/energy-api/node_modules/node-fetch/index.js:107:11)
+    at emitOne (events.js:77:13)
+    at ClientRequest.emit (events.js:169:7)
+    at Socket.socketErrorListener (_http_client.js:259:9)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at emitErrorNT (net.js:1246:8)
+    at doNTCallback2 (node.js:429:9)
+    at process._tickCallback (node.js:343:17)

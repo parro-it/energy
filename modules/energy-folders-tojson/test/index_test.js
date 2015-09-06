@@ -14,10 +14,27 @@ const expected = [
 test('convert details files',  t => {
   const pattern = resolve(__dirname, './fixtures') + '/**/*.csv';
   const convertedStream = convertFiles(pattern, __dirname);
-
-
   convertedStream.pipe(concat(result => {
     t.deepEqual(result, expected);
     t.end();
   }));
+});
+
+test('emit files counting events',  t => {
+  const pattern = resolve(__dirname, './fixtures') + '/**/*.csv';
+  const convertedStream = convertFiles(pattern, __dirname);
+
+  const results = [];
+  convertedStream.on('filesCounting', filesCounting => {
+    results.push({filesCounting});
+  });
+  convertedStream.on('filesCounter', filesCounter => {
+    results.push({filesCounter});
+    t.deepEqual(results, [
+      { filesCounting: 0 },
+      { filesCounting: 1 },
+      { filesCounter: 2 }
+    ]);
+    t.end();
+  });
 });

@@ -43,7 +43,6 @@ test('add details files', async t => {
   const res = await api.insertFiles(pattern, __dirname);
 
   res.pipe(concat({encoding: 'object'}, results => {
-    console.dir(results)
     results.forEach(r =>
       t.ok(Array.isArray(r.generated_keys))
     );

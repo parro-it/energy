@@ -24,12 +24,25 @@ const formatChooser = relativeDir => file => {
 
 export default function convertFiles(pattern, relativeDir) {
   const stream = gs.create(pattern);
+  const fileReader = map.obj(formatChooser(relativeDir));
 
-  return multipipe(
+  let filesCounter = 0;
+
+  const results = multipipe(
     stream,
-    map.obj(formatChooser(relativeDir)),
+    map.obj(chunk => {
+      results.emit('filesCounting', filesCounter++);
+      return chunk;
+    }),
+    fileReader,
     ss({ objectMode: true })
   );
+
+  stream.on('end', () => {
+    results.emit('filesCounter', filesCounter);
+  });
+
+  return results;
 }
 
 
