@@ -7,8 +7,24 @@ if (process.env.TEST_RELEASE) {
 import test from 'tape-catch';
 import { resolve } from 'path';
 import makeServer from 'energy-server';
-// import concat from 'concat-stream';
+import concat from 'concat-stream';
 const energyApi = require(moduleRoot);
+
+const expected = [{
+  deleted: 0,
+  errors: 0,
+  inserted: 1,
+  replaced: 0,
+  skipped: 0,
+  unchanged: 0
+}, {
+  deleted: 0,
+  errors: 0,
+  inserted: 1,
+  replaced: 0,
+  skipped: 0,
+  unchanged: 0
+}];
 
 async function prepareServer() {
   const server = makeServer();
@@ -17,6 +33,7 @@ async function prepareServer() {
   });
 }
 
+
 test('add details files', async t => {
   const server = await prepareServer();
   const api = energyApi({baseUrl: 'http://localhost:9080'});
@@ -24,30 +41,19 @@ test('add details files', async t => {
   const pattern = resolve(__dirname, './fixtures') + '/**/*.csv';
 
   const res = await api.insertFiles(pattern, __dirname);
-  const results = await res.json();
-  results.forEach(r =>
-    t.ok(Array.isArray(r.generated_keys))
-  );
-  results.forEach(r => delete r.generated_keys);
 
-  t.deepEqual(results, [{
-    deleted: 0,
-    errors: 0,
-    inserted: 1,
-    replaced: 0,
-    skipped: 0,
-    unchanged: 0
-  }, {
-    deleted: 0,
-    errors: 0,
-    inserted: 1,
-    replaced: 0,
-    skipped: 0,
-    unchanged: 0
-  }]);
+  res.pipe(concat({encoding: 'object'}, results => {
+    console.dir(results)
+    results.forEach(r =>
+      t.ok(Array.isArray(r.generated_keys))
+    );
+    results.forEach(r => delete r.generated_keys);
 
-  api.close();
-  server.close(()=> {
-    t.end();
-  });
+    t.deepEqual(results, expected);
+
+    api.close();
+    server.close(()=> {
+      t.end();
+    });
+  }));
 });

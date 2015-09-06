@@ -4,8 +4,7 @@ import getToken from './get-token';
 import { insertBareEnergyFile } from './energy-files';
 const secret = 'very';
 const jwtIssuer = 'energy';
-
-export { drainConnectionPool } from './model';
+import { drainConnectionPool } from './model';
 
 export default function makeServer({publicRoutes = []} = {}) {
   const server = restify.createServer();
@@ -30,3 +29,5 @@ export default function makeServer({publicRoutes = []} = {}) {
 
   return server;
 }
+
+makeServer.drainConnectionPool = drainConnectionPool;

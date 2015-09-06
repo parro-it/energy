@@ -7,7 +7,6 @@ const makeServer = require(moduleRoot);
 import test from 'tape-catch';
 import fetch from 'node-fetch';
 import basicAuthHeader from 'basic-auth-header';
-const drainConnectionPool = require(moduleRoot + '/model').drainConnectionPool;
 
 
 async function prepareServer() {
@@ -29,7 +28,7 @@ async function fetchToken() {
 }
 
 
-test('/insert bare files in database', async t => {
+test('/insert bare files in database', t => (async () => {
   const server = await prepareServer();
   const token = await fetchToken();
 
@@ -53,7 +52,10 @@ test('/insert bare files in database', async t => {
     [ { inserted: 1 }, { inserted: 1 } ]
   );
 
-  server.close(()=>t.end());
-});
+  return new Promise(resolve => server.close(resolve));
+})()
+  .then(t.end.bind(t))
+  .catch(t.fail.bind(t))
+);
 
 

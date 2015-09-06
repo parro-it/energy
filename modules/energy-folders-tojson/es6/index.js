@@ -1,5 +1,4 @@
 import gs from 'glob-stream';
-import { stringify } from 'JSONStream';
 import ss from 'stream-stream';
 import { parseDetails, parseRecap } from 'energy-files-tojson';
 import { createReadStream } from 'fs';
@@ -29,8 +28,7 @@ export default function convertFiles(pattern, relativeDir) {
   return multipipe(
     stream,
     map.obj(formatChooser(relativeDir)),
-    ss({ objectMode: true }),
-    stringify()
+    ss({ objectMode: true })
   );
 }
 

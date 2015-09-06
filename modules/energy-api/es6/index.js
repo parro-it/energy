@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import convertFiles from 'energy-folders-tojson';
 import { Agent } from 'https';
 import basicAuthHeader from 'basic-auth-header';
+import { stringify, parse } from 'JSONStream';
 
 export default ({baseUrl} = {}) => ({
   defaults: {
@@ -50,10 +51,10 @@ export default ({baseUrl} = {}) => ({
 
   async insertFiles(globs, baseFolder) {
     const res = await this.request('/energy/insert-bare-files', {
-      body: convertFiles(globs, baseFolder),
+      body: convertFiles(globs, baseFolder).pipe(stringify()),
       method: 'post'
     });
 
-    return res;
+    return res.body.pipe(parse('*'));
   }
 });
