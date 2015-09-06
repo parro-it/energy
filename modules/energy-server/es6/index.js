@@ -5,6 +5,8 @@ import { insertBareEnergyFile } from './energy-files';
 const secret = 'very';
 const jwtIssuer = 'energy';
 
+export { drainConnectionPool } from './model';
+
 export default function makeServer({publicRoutes = []} = {}) {
   const server = restify.createServer();
 

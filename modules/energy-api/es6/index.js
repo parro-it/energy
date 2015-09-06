@@ -36,7 +36,7 @@ export default ({baseUrl} = {}) => ({
 
   close() {
     delete this.defaults.headers.authorization;
-    this.defaults.destroy();
+    // this.defaults.agent.destroy();
   },
 
   async login(username, password) {
