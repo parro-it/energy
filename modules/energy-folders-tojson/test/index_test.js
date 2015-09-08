@@ -21,9 +21,9 @@ test('convert details files',  t => {
 });
 
 test('emit files counting events',  t => {
+  t.plan(1);
   const pattern = resolve(__dirname, './fixtures') + '/**/*.csv';
   const convertedStream = convertFiles(pattern, __dirname);
-
   const results = [];
   convertedStream.on('filesCounting', filesCounting => {
     results.push({filesCounting});
@@ -37,4 +37,5 @@ test('emit files counting events',  t => {
     ]);
     t.end();
   });
+  convertedStream.on('end', () => {});
 });

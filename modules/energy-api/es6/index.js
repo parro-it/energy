@@ -1,13 +1,10 @@
 import fetch from 'node-fetch';
 import convertFiles from 'energy-folders-tojson';
 // import { Agent } from 'https';
-import { EventEmitter } from 'events';
+// import { EventEmitter } from 'events';
 import basicAuthHeader from 'basic-auth-header';
 import { stringify, parse } from 'JSONStream';
-import { resolve } from 'path';
-import thenify from 'thenify';
-import _glob from 'glob';
-const glob = thenify(_glob);
+import concat from 'concat-stream';
 
 export default ({baseUrl} = {}) => ({
   defaults: {
@@ -54,25 +51,12 @@ export default ({baseUrl} = {}) => ({
     return Promise.resolve(!!result.token);
   },
 
-  countFiles(globs, baseFolder) {
-    const absGlob = resolve(baseFolder, globs);
-    const opts = {
-      cwd: baseFolder,
-      dot: false,
-      silent: true,
-      nonull: false,
-      cwdbase: false
-    };
-    return glob(absGlob, opts);
-  },
-
   async insertFiles(globs, baseFolder) {
-    const filesCounter = await this.countFiles(globs, baseFolder);
-    const filesCount = filesCounter.length;
     const files = convertFiles(globs, baseFolder);
     const body = files
       .pipe(stringify());
-
+  //    .pipe(concat({encoding: 'string'}, r => console.log(r)));
+//return;
     files.on('error', err => process.stderr.write(err.message));
 
     const res = await this.request('/energy/insert-bare-files', {
@@ -82,10 +66,7 @@ export default ({baseUrl} = {}) => ({
 
     const results = res.body.pipe(parse('*'));
 
-    setImmediate(() => {
-      results.emit('filesCounter', filesCount);
-    });
-
+    files.on('filesCounter', n => results.emit('filesCounter', n));
     files.on('filesCounting', n => results.emit('filesCounting', n));
     return results;
   }

@@ -13,7 +13,7 @@
   "dependencies": {
     "JSONStream": "^1.0.4",
     "babel-runtime": "^5.8.20",
-    "glob-stream": "^5.0.0",
+    "glob": "^5.0.14",
     "multipipe": "^0.1.2",
     "stream-stream": "^1.2.6",
     "through2-filter": "^2.0.0",
@@ -37,7 +37,8 @@
       "babel"
     ],
     "rules": {
-      "comma-dangle": 0
+      "comma-dangle": 0,
+      "no-undef": 1
     }
   },
   "babel": {
