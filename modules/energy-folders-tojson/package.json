@@ -15,10 +15,12 @@
     "babel-runtime": "^5.8.20",
     "glob": "^5.0.14",
     "multipipe": "^0.1.2",
+    "object-pairs": "^0.1.0",
     "stream-stream": "^1.2.6",
     "through2-filter": "^2.0.0",
     "through2-map": "^2.0.0",
-    "yargs": "^3.23.0"
+    "yargs": "^3.23.0",
+    "zipmap": "^1.1.1"
   },
   "author": "parro-it",
   "scripts": {
