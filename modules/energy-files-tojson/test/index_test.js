@@ -25,11 +25,11 @@ const makeSample = raw => fromArray(
 
 test('convert details files', t => {
   makeSample(details)
-    .pipe(parseDetails('anyone.csv'))
+    .pipe(parseDetails('anyone.csv', 'unique-id'))
     .pipe(concat({encoding: 'object'}, result => {
       t.deepEqual(result, [{
         type: 'detail',
-        filename: 'anyone.csv',
+        id: 'unique-id',
         date: '2015-06-30T22:00:00.000Z',
         input: 10.2,
         output: 11.3,
@@ -42,11 +42,11 @@ test('convert details files', t => {
 
 test('convert recap files', t => {
   makeSample(recap)
-    .pipe(parseRecap('anyone.csv'))
+    .pipe(parseRecap('anyone.csv', 'unique-id'))
     .pipe(concat({encoding: 'object'}, result => {
       t.deepEqual(result, [{
         type: 'recap',
-        filename: 'anyone.csv',
+        id: 'unique-id',
         date: '2015-07-15T18:27:00.000Z',
         name: 'uno qualunque',
         sapr: 'PVI_9988239_001',

@@ -4,11 +4,11 @@ import multipipe from 'multipipe';
 import csv from 'csv-streamify';
 import slice from 'slice-through';
 
-const mapDetails = filename => map.obj(
+const mapDetails = (filename, id) => map.obj(
   ([IDPTOSCAMBIOVIRTUALE, DA_MISURA, EEA, EUA]) =>
   ({
     type: 'detail',
-    filename,
+    id,
     sapr: IDPTOSCAMBIOVIRTUALE,
     date: moment(DA_MISURA, 'DD/MM/YYYY HH:mm:ss').toISOString(),
     input: Number(EEA),
@@ -16,11 +16,11 @@ const mapDetails = filename => map.obj(
   })
 );
 
-const mapRecap = filename => map.obj(
+const mapRecap = (filename, id) => map.obj(
   ([, NomeImpianto, CodicePSV, , DataValidazione, Versione, , TotaleEnergia]) =>
   ({
     type: 'recap',
-    filename,
+    id,
     sapr: CodicePSV,
     name: NomeImpianto,
     version: Number(Versione),
@@ -37,15 +37,15 @@ const csvOpts = {
   objectMode: true
 };
 
-export const parseDetails = filename => multipipe(
+export const parseDetails = (filename, id) => multipipe(
   csv(csvOpts),
-  mapDetails(filename),
+  mapDetails(filename, id),
   slice(1)
 );
 
 
-export const parseRecap = filename => multipipe(
+export const parseRecap = (filename, id) => multipipe(
   csv(csvOpts),
-  mapRecap(filename),
+  mapRecap(filename, id),
   slice(1)
 );
