@@ -29,7 +29,7 @@ test('convert details files', t => {
     .pipe(concat({encoding: 'object'}, result => {
       t.deepEqual(result, [{
         type: 'detail',
-        id: 'unique-id',
+        file: 'unique-id',
         date: '2015-06-30T22:00:00.000Z',
         input: 10.2,
         output: 11.3,

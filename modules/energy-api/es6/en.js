@@ -17,14 +17,10 @@ const {
   await api.login(username, password);
 
   const res = await api.insertFiles(pattern, process.cwd());
-  let total = 0;
-  res.on('filesCounting', progress => logUpdate(`
-    progress: ${progress} of ${total}
+  res.on('filesCounting', (progress, perc) => logUpdate(`
+    uploading files: ${progress} (${perc}%)
   `));
 
-  res.on('filesCounter', n => total = n);
   res.on('end', () => logUpdate('all files read'));
-   // .pipe(stringify())
-   // .pipe(process.stdout);
 })().catch(err => process.stdout.write(err.stack));
 

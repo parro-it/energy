@@ -8,20 +8,21 @@ import concat from 'concat-stream';
 const { parseFilename, pickLastVersion } = require(moduleRoot);
 const convertFiles = require(moduleRoot).default;
 const expected = [
-  {type: 'detail', filename: 'fixtures/UPNR_PUNTUALE_UPN_1188999_01_201504_2.details.csv', sapr: 'PVI_9988239_001', date: '2015-06-30T22:00:00.000Z', input: 10.2, output: 11.3},
-  {type: 'recap', filename: 'fixtures/UPNR_PUNTUALE_UPN_1188999_01_201504_2.general.csv', sapr: 'PVI_9988239_001', name: 'uno qualunque', version: 3, date: '2015-07-15T18:27:00.000Z', total: 424242.42}
+  {type: 'detail', sapr: 'PVI_9988239_001', date: '2015-06-30T22:00:00.000Z', input: 10.2, output: 11.3},
+  {type: 'recap',  sapr: 'PVI_9988239_001', name: 'uno qualunque', version: 3, date: '2015-07-15T18:27:00.000Z', total: 424242.42}
 ];
 
 test('convert details files',  t => {
   const pattern = resolve(__dirname, './fixtures') + '/*.csv';
   const convertedStream = convertFiles(pattern, __dirname);
   convertedStream.pipe(concat(result => {
+    t.equal(result[0].file, result[1].id);
+    delete result[0].file;
+    delete result[1].id;
     t.deepEqual(result, expected);
     t.end();
   }));
 });
-
-/*
 
 test('emit files counting events',  t => {
   t.plan(1);
@@ -42,10 +43,11 @@ test('emit files counting events',  t => {
   });
   convertedStream.on('end', () => {});
 });
-*/
+
 
 test('convert details new style filenames to objects',  t => {
   const result = parseFilename('UPNR_PUNTUALE_UPN_1117375_01_201507_1_Nome dell impianto.details.csv');
+
   t.deepEqual(result, {
     filename: 'UPNR_PUNTUALE_UPN_1117375_01_201507_1_Nome dell impianto.details.csv',
     sapr: '1117375',

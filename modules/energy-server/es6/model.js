@@ -18,5 +18,6 @@ export function getUser(username) {
 }
 
 export function insertEnergyFile(energyFile) {
-  return r().table('energyFile').insert(energyFile).run();
+  const tableName = energyFile.type === 'recap' ? 'energyFile' : 'energyMeasure';
+  return r().table(tableName).insert(energyFile).run();
 }

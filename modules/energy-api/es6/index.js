@@ -4,7 +4,7 @@ import convertFiles from 'energy-folders-tojson';
 // import { EventEmitter } from 'events';
 import basicAuthHeader from 'basic-auth-header';
 import { stringify, parse } from 'JSONStream';
-import concat from 'concat-stream';
+// import concat from 'concat-stream';
 
 export default ({baseUrl} = {}) => ({
   defaults: {
@@ -55,8 +55,11 @@ export default ({baseUrl} = {}) => ({
     const files = convertFiles(globs, baseFolder);
     const body = files
       .pipe(stringify());
-  //    .pipe(concat({encoding: 'string'}, r => console.log(r)));
-//return;
+
+    let total = 0;
+    files.on('filesCounter', n => {
+      total = n;
+    });
     files.on('error', err => process.stderr.write(err.message));
 
     const res = await this.request('/energy/insert-bare-files', {
@@ -66,8 +69,8 @@ export default ({baseUrl} = {}) => ({
 
     const results = res.body.pipe(parse('*'));
 
-    files.on('filesCounter', n => results.emit('filesCounter', n));
-    files.on('filesCounting', n => results.emit('filesCounting', n));
+    files.on('filesCounting', n => results.emit('filesCounting', `${n} of ${total}`, Math.round(n / total * 100)));
+
     return results;
   }
 });

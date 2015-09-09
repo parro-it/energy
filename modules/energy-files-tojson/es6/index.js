@@ -8,7 +8,7 @@ const mapDetails = (filename, id) => map.obj(
   ([IDPTOSCAMBIOVIRTUALE, DA_MISURA, EEA, EUA]) =>
   ({
     type: 'detail',
-    id,
+    file: id,
     sapr: IDPTOSCAMBIOVIRTUALE,
     date: moment(DA_MISURA, 'DD/MM/YYYY HH:mm:ss').toISOString(),
     input: Number(EEA),

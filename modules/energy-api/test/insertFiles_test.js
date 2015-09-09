@@ -43,9 +43,6 @@ test('add details files', async t => {
   const res = await api.insertFiles(pattern, __dirname);
 
   res.pipe(concat({encoding: 'object'}, results => {
-    results.forEach(r =>
-      t.ok(Array.isArray(r.generated_keys))
-    );
     results.forEach(r => delete r.generated_keys);
 
     t.deepEqual(results, expected);
