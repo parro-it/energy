@@ -1,4 +1,4 @@
-import { insertEnergyFile } from './model';
+import { insertEnergyFile, saveEnergyFiles } from './model';
 import streamBodyParser from 'restify-jsonstream-bodyparser';
 import map from 'through2-map';
 import multipipe from 'multipipe';
@@ -12,6 +12,11 @@ function resolve(promisedInsertResult, enc, cb) {
       cb();
     })
     .catch(cb);
+}
+
+export async function saveBareEnergyFiles(req, res) {
+  const results = await saveEnergyFiles();
+  res.send(results);
 }
 
 export const insertBareEnergyFile = () => [

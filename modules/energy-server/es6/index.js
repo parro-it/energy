@@ -1,12 +1,21 @@
 import restify from 'restify';
 import restifyJwt from 'restify-jwt';
 import getToken from './get-token';
-import { insertBareEnergyFile } from './energy-files';
+import { insertBareEnergyFile, saveBareEnergyFiles } from './energy-files';
 const secret = 'very';
 const jwtIssuer = 'energy';
 import { drainConnectionPool } from './model';
 
-export default function makeServer({publicRoutes = []} = {}) {
+const catchErrs = fn => async (req, res, next) => {
+  try {
+    await fn(req, res);
+    next();
+  } catch(err) {
+    next(err);
+  }
+};
+
+export default function makeServer({publicRoutes = ['/energy/save']} = {}) {
   const server = restify.createServer();
 
   const arePublicRoutes = {
@@ -16,6 +25,7 @@ export default function makeServer({publicRoutes = []} = {}) {
 
   server.use(restify.authorizationParser());
   server.use(authorize);
+  server.get('/energy/save', catchErrs(saveBareEnergyFiles));
   server.get('/token', getToken(secret, jwtIssuer));
   server.post(
     {
