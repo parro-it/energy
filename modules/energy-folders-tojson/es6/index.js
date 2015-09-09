@@ -1,3 +1,4 @@
+import uuid from 'node-uuid';
 import ss from 'stream-stream';
 import { parseDetails, parseRecap } from 'energy-files-tojson';
 import { createReadStream } from 'fs';
@@ -25,7 +26,7 @@ const formatChooser = relativeDir => file => {
   }
 
   return createReadStream(file.path, 'utf8')
-    .pipe(converter(relative(relativeDir, file.path)));
+    .pipe(converter(relative(relativeDir, file.path), file.id));
 };
 
 export function parseFilename(filename) {
@@ -57,11 +58,19 @@ export function pickLastVersion(files) {
       return results;
     }, {});
 
+
   return zip(pairs(grouped)
-    .filter(([, value]) =>
-      value.details && value.recap &&
-      value.details.version === value.recap.version
-    ));
+    .filter(([, value]) => {
+      if (!value.details || !value.recap) {
+        return false;
+      }
+
+      const id = uuid.v4();
+      value.details.id = id;
+      value.recap.id = id;
+
+      return value.details.version === value.recap.version;
+    }));
 }
 
 
@@ -78,7 +87,7 @@ async function countFiles(globs, baseFolder) {
   const results = pairs(pickLastVersion(
     files.map(parseFilename)
   )).reduce((flattened, [, {details, recap}]) => {
-    flattened.push(details.filename, recap.filename);
+    flattened.push(details, recap);
     return flattened;
   }, []);
   return results;
@@ -104,7 +113,7 @@ export default function convertFiles(pattern, relativeDir) {
   );
 
   filesCounter.then(totalFile => {
-    totalFile.forEach(f => stream.push({path: f}));
+    totalFile.forEach(f => stream.push({path: f.filename, id: f.id}));
     stream.push(null);
     results.emit('filesCounter', totalFile.length);
   }).catch(err => results.emit('error', err));
