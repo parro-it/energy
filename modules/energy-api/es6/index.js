@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+const fetch = global.fetch || require('node-fetch');
 import convertFiles from 'energy-folders-tojson';
 // import { Agent } from 'https';
 // import { EventEmitter } from 'events';

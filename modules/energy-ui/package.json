@@ -1,0 +1,56 @@
+{
+  "name": "energy-ui",
+  "description": "",
+  "repository": "https://github.com/parro-it/energy.git",
+  "bugs": {
+    "url": "https://github.com/parro-it/energy/issues"
+  },
+  "version": "1.0.0",
+  "main": "es6/index.js",
+  "dependencies": {},
+  "author": "parro-it",
+  "scripts": {
+    "test": "babel-node test | tap-dot",
+    "test-watch": "nodemon --watch es6/ --watch test/ --exec \"npm run test\"",
+    "build": "webpack && cp es6/index.html dist",
+    "watch": "webpack-dev-server --port 6060 --progress --colors",
+    "build-test": "babel test --out-dir dist_test",
+    "lint": "eslint es6/*.js test/*.js"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-airbnb",
+    "plugins": [
+      "babel"
+    ],
+    "rules": {
+      "comma-dangle": 0,
+      "no-undef": 1
+    }
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.23",
+    "babel-eslint": "^4.0.5",
+    "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.20",
+    "bootstrap": "^3.3.5",
+    "css-loader": "^0.17.0",
+    "eslint": "^1.3.1",
+    "eslint-config-airbnb": "0.0.8",
+    "eslint-plugin-babel": "^2.1.1",
+    "eslint-plugin-react": "^3.3.1",
+    "file-loader": "^0.8.4",
+    "font-awesome": "^4.4.0",
+    "mithril": "^0.2.0",
+    "null-loader": "^0.1.1",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.12.3",
+    "tap-dot": "^1.0.0",
+    "tape": "^4.2.0",
+    "tape-catch": "^1.0.4",
+    "thenify": "^3.1.0",
+    "url-loader": "^0.5.6",
+    "webpack": "^1.12.1",
+    "webpack-dev-server": "^1.10.1"
+  },
+  "license": "MIT"
+}
